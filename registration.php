@@ -1,11 +1,16 @@
 <?php
-$username = "";
-$registrationSuccess = false;
+$firstName = $_GET["first_name"] ?? "";
+$lastName = $_GET["last_name"] ?? "";
+$showSuccessMessage = false;
+
+if (!empty($firstName) && !empty($lastName)) {
+    $showSuccessMessage = true;
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $firstName = $_POST["firstName"] ?? "";
+    $submittedFirstName = $_POST["firstName"] ?? "";
     $middleName = $_POST["middleName"] ?? "";
-    $lastName = $_POST["lastName"] ?? "";
+    $submittedLastName = $_POST["lastName"] ?? "";
     $birthday = $_POST["birthday"] ?? "";
     $email = $_POST["email"] ?? "";
     $mobile = $_POST["mobile"] ?? "";
@@ -14,11 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $errors = [];
     
-    if (empty($firstName)) {
+    if (empty($submittedFirstName)) {
         $errors[] = "First name is required";
     }
     
-    if (empty($lastName)) {
+    if (empty($submittedLastName)) {
         $errors[] = "Last name is required";
     }
     
@@ -37,9 +42,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
     if (empty($errors)) {
-        $username = $firstName . $lastName;
-        
-        $registrationSuccess = true;
+        $redirectUrl = "registration.php?first_name=" . urlencode($submittedFirstName) . "&last_name=" . urlencode($submittedLastName);
+        header("Location: " . $redirectUrl);
+        exit();
     }
 }
 ?>
@@ -58,11 +63,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 20px;
         }
         
-        .header {
-            background-color: #f4f4f4;
-            padding: 10px;
+        .success-message {
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 15px;
             margin-bottom: 20px;
-            text-align: right;
+            border-radius: 4px;
         }
         
         .form-group {
@@ -103,20 +109,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: red;
             margin-bottom: 15px;
         }
-        
-        .success {
-            color: green;
-            margin-bottom: 15px;
-        }
     </style>
 </head>
 <body>
-    <?php if ($username): ?>
-    <div class="header">
-        <?php echo htmlspecialchars($username); ?>
-    </div>
-    <?php endif; ?>
-    
     <h2>Registration Form</h2>
     
     <?php if (!empty($errors)): ?>
@@ -126,12 +121,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <li><?php echo htmlspecialchars($error); ?></li>
             <?php endforeach; ?>
         </ul>
-    </div>
-    <?php endif; ?>
-    
-    <?php if ($registrationSuccess): ?>
-    <div class="success">
-        Registration successful! Welcome, <?php echo htmlspecialchars($firstName . " " . $lastName); ?>!
     </div>
     <?php endif; ?>
     
