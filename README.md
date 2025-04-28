@@ -1,6 +1,6 @@
 # Web System - Registration, Login, and Landing Page
 
-## Tecgnologies Used
+## Technologies Used
 
 * **Frontend:** HTML, CSS, JavaScript [Bootstrap]
 * **Backend:** PHP
